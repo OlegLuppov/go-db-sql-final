@@ -49,7 +49,7 @@ func TestAddGetDelete(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = store.Get(parcel.Number)
-	assert.Equal(t, sql.ErrNoRows, err)
+	assert.ErrorIs(t, err, sql.ErrNoRows)
 }
 
 // TestSetAddress проверяет обновление адреса
@@ -140,7 +140,8 @@ func TestGetByClient(t *testing.T) {
 	assert.Len(t, storedParcels, len(parcels))
 
 	for _, parcel := range storedParcels {
-		assert.NotEmpty(t, parcelMap[parcel.Number])
-		assert.Equal(t, parcelMap[parcel.Number], parcel)
+		expextedParcel, ok := parcelMap[parcel.Number]
+		require.True(t, ok)
+		assert.Equal(t, expextedParcel, parcel)
 	}
 }
